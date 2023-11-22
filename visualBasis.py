@@ -17,21 +17,21 @@ class VisualBasis(NAOConfigure):
     A basic class for visual identity inherits from NAOConfigure class
     """
 
-    def __init__(self, IP, port=9559, cameraID=vd.kBottomCamera, resolution=vd.kVGA):
+    def __init__(self, ip, port=9559, camera_id=vd.kBottomCamera, resolution=vd.kVGA):
         """
         :arg:
-            :param IP: the ip address of a NAO robot
-            :type IP: str
+            :param ip: the ip address of a NAO robot
+            :type ip: str
             :param port: the port to connect NAO robot (9559, default)
             :type port: int
-            :param cameraID bottom camera (1,default) or top camera (0).
-            :type cameraID: int
+            :param camera_id bottom camera (1,default) or top camera (0).
+            :type camera_id: int
             :param resolution: kVGA, default: 640*480
             :type resolution: int
         :returns: None
         """
-        super(VisualBasis, self).__init__(IP, port)
-        self.cameraID = cameraID
+        super(VisualBasis, self).__init__(ip, port)
+        self.cameraID = camera_id
         self.resolution = resolution
         self.colorSpace = vd.kHSVColorSpace
         self.fps = 30
@@ -39,8 +39,9 @@ class VisualBasis(NAOConfigure):
         self.frameWidth = 0
         self.frameChannels = 0
         self._frameArray = np.array([])
-        self.cameraPitchRange = 47.64 / 180 * np.pi
-        self.cameraYawRange = 60.97 / 180 * np.pi
+        self._gray_frame = np.array([])
+        self.cameraPitchRange = 47.64 / 180 * np.pi  # 俯仰角范围
+        self.cameraYawRange = 60.97 / 180 * np.pi  # 偏航角范围
         self.cameraProxy.setActiveCamera(self.cameraID)
 
     def update_frame(self, client="python-client"):
@@ -97,12 +98,12 @@ class VisualBasis(NAOConfigure):
         print "Frame Channels: " + str(self.frameChannels)
         print "Frame Shape:    " + str(self._frameArray.size)
 
-    def save_frame(self, framePath):
+    def save_frame(self, frame_path):
         """
         :arg:
-            :param framePath: The path to store the current frame
-            :type framePath: str
+            :param frame_path: The path to store the current frame
+            :type frame_path: str
         :return: None
         """
-        cv2.imwrite(framePath, self._frameArray)
-        print "Current frame image saved in " + framePath
+        cv2.imwrite(frame_path, self._frameArray)
+        print "Current frame image saved in " + frame_path
