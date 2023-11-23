@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @Time    : 2023/11/23 10:13
-@Author  : EvanWong
+@Author  : Evan Wong
 @File    : stick_detect.py
 @Project : NAOGolf
 @Description: To detect the yellow stick at golf hole

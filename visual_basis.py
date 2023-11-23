@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @Time    : 2023/11/22 17:08
-@Author  : EvanWong
+@Author  : Evan Wong
 @File    : visual_basis.py
 @Project : NAOGolf
 @Description: Basic class for visual identity, stored some attributes about frame and camera

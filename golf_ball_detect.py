@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @Time    : 2023/11/22 19:59
-@Author  : EvanWong
+@Author  : Evan Wong
 @File    : golf_ball_detect.py
 @Project : NAOGolf
 @Description: To detect the red golf ball

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 @Time    : 2023/11/22 16:41
-@Author  : EvanWong
+@Author  : Evan Wong
 @File    : nao_configure.py
 @Project : NAOGolf
 @Description: Basic class for NAO, to store the proxies
