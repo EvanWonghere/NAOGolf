@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2023/11/22 16:41
 # @Author  : EvanWong
-# @File    : NAOConfigure.py
+# @File    : nao_configure.py
 # @Project : NAOGolf
 
 from naoqi import ALProxy

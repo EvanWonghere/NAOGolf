@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 # @Time    : 2023/11/22 17:08
 # @Author  : EvanWong
-# @File    : visualBasis.py
+# @File    : visual_basis.py
 # @Project : NAOGolf
-
-from NAOConfigure import NAOConfigure
 
 import cv2
 import time
 import numpy as np
 import vision_definitions as vd
+
+from nao_configure import NAOConfigure
 
 
 class VisualBasis(NAOConfigure):
@@ -77,6 +77,16 @@ class VisualBasis(NAOConfigure):
             :rtype: np.ndarray
         """
         return self._frameArray.copy()
+
+    @property
+    def gray_frame(self):
+        """
+        Get preprocessed binary image
+        :return:
+            Preprocessed image
+            :rtype: np.ndarray
+        """
+        return self._gray_frame.copy()
 
     def show_frame(self):
         """

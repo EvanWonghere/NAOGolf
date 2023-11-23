@@ -5,7 +5,8 @@
 # 按 双击 Shift 在所有地方搜索类、文件、工具窗口、操作和设置。
 
 import naoqi
-from GolfBallDetect import GolfBallDetect
+from golf_ball_detect import GolfBallDetect
+
 
 def print_hi(name):
     # 在下面的代码行中使用断点来调试脚本。
