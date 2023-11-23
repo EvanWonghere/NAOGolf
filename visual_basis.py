@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2023/11/22 17:08
-# @Author  : EvanWong
-# @File    : visual_basis.py
-# @Project : NAOGolf
+"""
+@Time    : 2023/11/22 17:08
+@Author  : EvanWong
+@File    : visual_basis.py
+@Project : NAOGolf
+@Description: Basic class for visual identity, stored some attributes about frame and camera
+"""
 
 import cv2
 import time

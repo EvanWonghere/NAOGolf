@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2023/11/23 10:13
-# @Author  : EvanWong
-# @File    : stick_detect.py
-# @Project : NAOGolf
+"""
+@Time    : 2023/11/23 10:13
+@Author  : EvanWong
+@File    : stick_detect.py
+@Project : NAOGolf
+@Description: To detect the yellow stick at golf hole
+"""
+
 import cv2
 import numpy as np
 import vision_definitions as vd
@@ -39,6 +43,7 @@ class StickDetect(VisualBasis):
         """
         super(StickDetect, self).__init__(ip, port, camera_id, resolution)
         self.stick = self.Stick()
+        self.is_write = is_write
 
     def __get_preprocessed_image(self, min_hsv, max_hsv, crop_keep):
         """
@@ -83,7 +88,7 @@ class StickDetect(VisualBasis):
         :arg:
             :param preprocessed_img: Pre-processed image to be detected
             :type preprocessed_img: np.ndarray
-            :param min_perimeter: minimum perimeter of detected stick.
+            :param min_perimeter: minimum perimeter of detected stick
             :type min_perimeter: float
             :param min_area: minimum area of detected stick
             :type min_area: float

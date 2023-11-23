@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2023/11/22 19:59
-# @Author  : EvanWong
-# @File    : golf_ball_detect.py
-# @Project : NAOGolf
+"""
+@Time    : 2023/11/22 19:59
+@Author  : EvanWong
+@File    : golf_ball_detect.py
+@Project : NAOGolf
+@Description: To detect the red golf ball
+"""
 
 import cv2
 import numpy as np
@@ -161,8 +164,10 @@ class GolfBallDetect(VisualBasis):
                 head_yaws = self.motionProxy.getAngles("HeadYaw", True)
                 head_yaw = head_yaws[0]  # 俯仰角
                 # 像素坐标系 -> 图片坐标系 -> 相机坐标系（angle）
-                ball_pitch = (center_y - 240.0) * self.cameraPitchRange / 480.0  # y (pitch angle)
-                ball_yaw = (320.0 - center_x) * self.cameraYawRange / 640.0  # x (yaw angle)
+                ball_pitch = (center_y - 1.0 * self.frameHeight / 2) * self.cameraPitchRange / self.frameHeight
+                # y (pitch angle)
+                ball_yaw = (1.0 * self.frameWidth / 2 - center_x) * self.cameraYawRange / self.frameWidth
+                # x (yaw angle)
                 # 应是 (cameraHeight - ballRadius) / Pitch = np.tan(cameraDirection / 180 * np.pi + headPitch + ballPitch)
                 # cameraDirection为初始绝对角度，headPitch为运动角度，ballPitch球相对摄像机角度，相加即球相对NAO角度
                 # 故dPitch为球到NAO的距离，易得dYaw为球相对摄像机的位置，SA距离

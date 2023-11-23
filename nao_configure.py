@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
-# @Time    : 2023/11/22 16:41
-# @Author  : EvanWong
-# @File    : nao_configure.py
-# @Project : NAOGolf
+"""
+@Time    : 2023/11/22 16:41
+@Author  : EvanWong
+@File    : nao_configure.py
+@Project : NAOGolf
+@Description: Basic class for NAO, to store the proxies
+"""
 
 from naoqi import ALProxy
 
@@ -23,10 +26,11 @@ class NAOConfigure(object):
         self.port = port
 
         try:
+            self.ttsProxy = ALProxy("ALTextToSpeech", self.ip, self.port)
+            self.memoryProxy = ALProxy("ALMemory", self.ip, self.port)
             self.cameraProxy = ALProxy("AVideoDevice", self.ip, self.port)
             self.motionProxy = ALProxy("ALMotion", self.ip, self.port)
             self.postureProxy = ALProxy("ALRobotPosture", self.ip, self.port)
-            self.ttsProxy = ALProxy("ALTextToSpeech", self.ip, self.port)
             self.landmarkProxy = ALProxy("ALLandMarkDetection", self.ip, self.port)
         except Exception, e:
             print("Error when configuring the NAO!")
