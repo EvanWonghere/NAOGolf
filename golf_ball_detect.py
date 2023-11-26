@@ -324,3 +324,14 @@ class GolfBallDetect(VisualBasis):
             if k == 27:
                 break
         cv2.destroyAllWindows()
+
+    def is_golf_ball_insight(self):
+        """
+        Return whether the golf ball is in NAO robot's sight.
+
+        :return:
+            True means in sight else not.
+            :rtype: bool
+        """
+        [dis_x, dis_y, angle] = self.ball_position
+        return dis_x or dis_y or angle

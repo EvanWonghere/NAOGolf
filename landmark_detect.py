@@ -21,10 +21,12 @@ class LandMarkDetect(VisualBasis):
     """
     The class to detect NAO landmark, inherits from VisualBasis class.
     """
+
     class Landmark:
         """
         Simple class for landmark.
         """
+
         def __init__(self, landmark_size):
             """
             Initialization.
@@ -193,5 +195,11 @@ class LandMarkDetect(VisualBasis):
         self.landmarkProxy.unsubscribe("landmarkTest")
 
     def is_landmark_insight(self):
-        return self.landmark.dis_x or self.landmark.dis_y or \
-               self.landmark.dist or self.landmark.yawAngle
+        """
+        Return whether the NAO landmark is in NAO robot's sight.
+
+        :return:
+            True means in sight else not.
+            :rtype: bool
+        """
+        return self.landmark.dis_x or self.landmark.dis_y or self.landmark.dist or self.landmark.yawAngle

@@ -137,14 +137,3 @@ class Actions(MotionBasis):
                 self.look_down()
                 self.motionProxy.moveTo(0, 0, angle, self.moveConfig)
                 self.motionProxy.moveTo(x - 0.3, 0, 0, self.moveConfig)
-
-    def is_golf_ball_insight(self):
-        """
-        Return whether the golf ball is in NAO robot's sight.
-
-        :return:
-            True means in sight else not.
-            :rtype: bool
-        """
-        [dis_x, dis_y, angle] = self.ball_detector.ball_position
-        return dis_x or dis_y or angle
