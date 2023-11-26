@@ -67,7 +67,7 @@ class StickDetect(VisualBasis):
         height = self.frameHeight
 
         try:
-            cropped_frame = frame_array[int((1 - crop_keep) * height)]
+            cropped_frame = frame_array[int((1 - crop_keep) * height):, :]
         except IndexError:
             print "Error occurred when cropping the image"
         else:

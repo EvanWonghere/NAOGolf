@@ -34,10 +34,12 @@ class LandMarkDetect(VisualBasis):
             :return: None
             """
             self.landmark_size = landmark_size
+            self.landmark_flag = False
             self.dis_x = 0
             self.dis_y = 0
             self.dist = 0
             self.yawAngle = 0
+            self.mark_info = []
 
     def __init__(self, ip, port=9559, camera_id=vd.kTopCamera, landmark_size=0.105):
         """
@@ -73,28 +75,17 @@ class LandMarkDetect(VisualBasis):
             self.cameraProxy.setActiveCamera(self.cameraID)
             time.sleep(1)
 
-        self.landmarkProxy.subscribe(client)
-        landmark_data = self.memoryProxy.getData("LandmarkDetected")
-        self.cameraProxy.unsubscribe(client)
+        self.search_landmark()
 
-        if landmark_data is None or len(landmark_data) == 0:
+        if not self.landmark.landmark_flag:
             self.landmark.dis_x = 0
             self.landmark.dis_y = 0
             self.landmark.dist = 0
             self.landmark.yawAngle = 0
         else:
-            # landmark_data:
-            #   [TimeStampField, MarkInfo[N], CameraPoseInFrameTorso, CameraPoseInFrameRobot, CurrentCameraName]
-            #       - MarkInfo = [ShapeInfo, MarkID]
-            #           - ShapeInfo = [1, alpha, beta, sizeX, sizeY, heading]
-            #               - `alpha` and `beta` represent the location of the NaoMark’s center
-            #                 in terms of camera angles in radian.
-            #               - `sizeX` and `sizeY` are the mark’s size in camera angles.
-            #               - the `heading` angle describes how the Nao mark is oriented about the vertical axis
-            #                 in regard to the robot’s head.
-            wzCamera = landmark_data[1][0][0][1]  # alpha
-            wyCamera = landmark_data[1][0][0][2]  # beta
-            angularSize = landmark_data[1][0][0][3]  # sizeX
+            wzCamera = self.landmark.mark_info[0]  # alpha
+            wyCamera = self.landmark.mark_info[1]  # beta
+            angularSize = self.landmark.mark_info[2]  # sizeX
             distCameraToLandmark = self.landmark.landmark_size / (2 * math.tan(angularSize / 2))
             # 变形而来，原式为：
             # tan(angularSize / 2) = (self.landmark.landmark_size / 2) / distCameraToLandmark
@@ -149,3 +140,58 @@ class LandMarkDetect(VisualBasis):
         print("disY = ", self.landmark.dis_y)
         print("dis = ", self.landmark.dist)
         print("yaw angle = ", self.landmark.yawAngle * 180.0 / np.pi)
+
+    def search_landmark(self):
+        """
+        The method to search the NAO landmark.
+
+        :return: None
+        """
+        headYawAngle = -2
+
+        self.motionProxy.angleInterpolationWithSpeed("HeadPitch", 0.0, 0.3)
+        self.motionProxy.angleInterpolationWithSpeed("HeadYaw", 0.0, 0.3)
+        self.landmarkProxy.subscribe("landmarkTest")
+        markData = self.memoryProxy.getData("LandmarkDetected")
+        while headYawAngle <= 2:
+            self.motionProxy.angleInterpolationWithSpeed("HeadYaw", headYawAngle, 0.1)
+            time.sleep(1)
+            markData = self.memoryProxy.getData("LandmarkDetected")
+
+            if markData and isinstance(markData, list) and len(markData) >= 2:
+                self.ttsProxy.say("i saw landmark!")
+                self.landmark.landmark_flag = True
+                # mark_data:
+                #   [TimeStampField, MarkInfo[N], CameraPoseInFrameTorso, CameraPoseInFrameRobot, CurrentCameraName]
+                #       - MarkInfo = [ShapeInfo, MarkID]
+                #           - ShapeInfo = [1, alpha, beta, sizeX, sizeY, heading]
+                #               - `alpha` and `beta` represent the location of the NaoMark’s center
+                #                 in terms of camera angles in radian.
+                #               - `sizeX` and `sizeY` are the mark’s size in camera angles.
+                #               - the `heading` angle describes how the Nao mark is oriented about the vertical axis
+                #                 in regard to the robot’s head.
+                wzCamera = markData[1][0][0][1]
+                wyCamera = markData[1][0][0][2]
+                angularSize = markData[1][0][0][3]
+
+                head_yaw_angle = self.motionProxy.getAngles("HeadYaw", True)
+
+                head_angle = wzCamera + head_yaw_angle[0]
+                self.landmark.mark_info = [wzCamera, wyCamera, angularSize, head_angle]
+                return
+            else:
+                self.ttsProxy.say("where is landmark ?")
+                wzCamera = 0
+                wyCamera = 0
+                angular_Size = 0
+                headYawAngle = headYawAngle + 0.8
+        self.ttsProxy.say("i can not find landmark ! I will hit the ball directly ! ")
+        print("landmark is not in sight !")
+        self.landmark.landmark_flag = False
+        self.landmark.mark_info = [0.0, 0.0, 0.0, 0.0]
+
+        self.landmarkProxy.unsubscribe("landmarkTest")
+
+    def is_landmark_insight(self):
+        return self.landmark.dis_x or self.landmark.dis_y or \
+               self.landmark.dist or self.landmark.yawAngle
