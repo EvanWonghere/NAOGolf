@@ -13,7 +13,8 @@ from naoqi import ALProxy
 class NAOConfigure(object):
     def __init__(self, ip, port=9559):
         """
-        Basic NAO robot class with some proxies
+        Basic NAO robot class with some proxies.
+
         :arg:
             :param ip: the ip address of a NAO robot
             :type ip: str

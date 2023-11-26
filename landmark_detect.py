@@ -19,15 +19,15 @@ from visual_basis import VisualBasis
 
 class LandMarkDetect(VisualBasis):
     """
-    The class to detect NAO landmark, inherits from VisualBasis class
+    The class to detect NAO landmark, inherits from VisualBasis class.
     """
     class Landmark:
         """
-        Simple class for landmark
+        Simple class for landmark.
         """
         def __init__(self, landmark_size):
             """
-            Initialization
+            Initialization.
             :arg:
                 :param landmark_size: the size of NAO landmark
                 :type landmark_size: float
@@ -41,7 +41,8 @@ class LandMarkDetect(VisualBasis):
 
     def __init__(self, ip, port=9559, camera_id=vd.kTopCamera, landmark_size=0.105):
         """
-        Initialization
+        Initialization.
+
         :arg:
             :param ip: the ip address of a NAO robot
             :type ip: str
@@ -53,7 +54,7 @@ class LandMarkDetect(VisualBasis):
             :type landmark_size: float
         :return: None
         """
-        super(LandMarkDetection, self).__init__(ip, port, camera_id)
+        super(LandMarkDetect, self).__init__(ip, port, camera_id)
         self.landmark = self.Landmark(landmark_size)
         self.cameraID = camera_id
         self.cameraName = "CameraTop" if camera_id == vd.kTopCamera else "CameraBottom"
@@ -61,7 +62,8 @@ class LandMarkDetect(VisualBasis):
 
     def update_landmark_data(self, client="landMark"):
         """
-        Update NAO landmark information
+        Update NAO landmark information.
+
         :arg:
             :param client: client name
             :type client: str
@@ -131,7 +133,8 @@ class LandMarkDetect(VisualBasis):
 
     def get_landmark_data(self):
         """
-        Get landmark information
+        Get landmark information.
+
         :return: None
         """
         return [self.landmark.dis_x, self.landmark.dis_y, self.landmark.dist, self.landmark.yawAngle]
@@ -139,6 +142,7 @@ class LandMarkDetect(VisualBasis):
     def show_landmark_data(self):
         """
         Show landmark information that detected.
+
         :return: None
         """
         print("disX = ", self.landmark.dis_x)

@@ -16,7 +16,8 @@ from visual_basis import VisualBasis
 
 def find_circles(preprocessed_img, min_dist, min_radius, max_radius):
     """
-    Detect circles from image
+    Detect circles from image.
+
     :arg:
         :param preprocessed_img: Pre-processed image to be detected
         :type preprocessed_img: np.ndarray
@@ -46,6 +47,7 @@ def find_circles(preprocessed_img, min_dist, min_radius, max_radius):
 def select_circle(circles):
     """
     Select one circle in list type from all circles detected.
+
     :arg:
         :param circles: numpy array shaped (N, 3),　N is the number of circles.
         :type circles: np.ndarray
@@ -61,15 +63,15 @@ def select_circle(circles):
 
 class GolfBallDetect(VisualBasis):
     """
-    A class to detect golf ball inherits from VisualBasis class
+    A class to detect golf ball inherits from VisualBasis class.
     """
     class GolfBall:
         """
-        Simple class for golf ball
+        Simple class for golf ball.
         """
         def __init__(self):
             """
-            Initialization
+            Initialization.
             """
             self.ballData = {"centerX": 0, "centerY": 0, "radius": 0}
             self.ballPosition = {"disX": 0, "disY": 0, "angle": 0}
@@ -77,6 +79,8 @@ class GolfBallDetect(VisualBasis):
 
     def __init__(self, ip, port=9559, camera_id=vd.kBottomCamera, resolution=vd.kVGA, is_write=True):
         """
+        Initialization.
+
         :arg:
             :param ip: the ip address of a NAO robot
             :type ip: str
@@ -88,6 +92,7 @@ class GolfBallDetect(VisualBasis):
             :type resolution: int
             :param is_write: whether write current frame to specific directory, we actually not used it
             :type is_write: bool
+        :return: None
         """
         super(GolfBallDetect, self).__init__(ip, port, camera_id, resolution)
         self.golfBall = self.GolfBall()
@@ -95,7 +100,8 @@ class GolfBallDetect(VisualBasis):
 
     def __get_preprocessed_image(self, low_min_hsv, low_max_hsv, high_min_hsv, high_max_hsv):
         """
-        Get pre-processed binary image from the HSV image (transformed from BGR image)
+        Get pre-processed binary image from the HSV image (transformed from BGR image).
+
         :arg:
             :param low_min_hsv: Lower threshold for lower range red tones
             :type low_max_hsv: np.ndarray
@@ -131,6 +137,7 @@ class GolfBallDetect(VisualBasis):
     def _update_ball_position(self, stand_state):
         """
         Compute and update the ball position with the ball data in frame.
+
         :arg:
             :param stand_state: Stand state of NAO robot, "standInit" or "standUp"
             :type stand_state: str
@@ -193,6 +200,8 @@ class GolfBallDetect(VisualBasis):
                          high_min_hsv=np.array([156, 43, 46]),
                          high_max_hsv=np.array([180, 255, 255])):
         """
+        Detect and update the data of golf ball.
+
         :arg:
             :param client: client name
             :type client: str
@@ -234,7 +243,8 @@ class GolfBallDetect(VisualBasis):
     @property
     def ball_position(self):
         """
-        Get golf ball's position
+        Get golf ball's position.
+
         :return:
             distance in x-axis, distance in y-axis and direction related to Nao.
             :rtype: list
@@ -245,6 +255,7 @@ class GolfBallDetect(VisualBasis):
     def ball_data(self):
         """
         Get ball information in image.
+
         :return:
             CenterX, centerY and radius of the red ball.
             :rtype: list
@@ -253,7 +264,8 @@ class GolfBallDetect(VisualBasis):
 
     def show_ball_position(self):
         """
-        Show ball data in the current frame
+        Show ball data in the current frame.
+
         :return: None
         """
         if self.golfBall.ballData["radius"] == 0:
@@ -275,6 +287,8 @@ class GolfBallDetect(VisualBasis):
 
     def slider_hsv(self, client):
         """
+        Create sliders to change the threshold of HSV.
+
         :arg:
             :param client: client name
             :type client: str

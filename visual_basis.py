@@ -17,11 +17,13 @@ from nao_configure import NAOConfigure
 
 class VisualBasis(NAOConfigure):
     """
-    A basic class for visual identity inherits from NAOConfigure class
+    A basic class for visual identity inherits from NAOConfigure class.
     """
 
     def __init__(self, ip, port=9559, camera_id=vd.kBottomCamera, resolution=vd.kVGA):
         """
+        Initialization.
+
         :arg:
             :param ip: the ip address of a NAO robot
             :type ip: str
@@ -49,7 +51,8 @@ class VisualBasis(NAOConfigure):
 
     def update_frame(self, client="python-client"):
         """
-        Get a new image from the specified camera and save it in self._frame.
+        Get a new image from the specific camera and save it in self._frame.
+
         :arg:
             :param client: client name
             :type client: str
@@ -69,12 +72,13 @@ class VisualBasis(NAOConfigure):
             self.frameChannels = frame[2]
             self._frameArray = np.frombuffer(frame[6], dtype=np.uint8).reshape([frame[1], frame[0], frame[2]])
         except IndexError:
-            print("get image failed!")
+            print "get image failed!"
 
     @property
     def frame_array(self):
         """
-        Get current frame array
+        Get current frame array.
+
         :return:
             current frame array (empty array if None)
             :rtype: np.ndarray
@@ -84,7 +88,8 @@ class VisualBasis(NAOConfigure):
     @property
     def gray_frame(self):
         """
-        Get preprocessed binary image
+        Get preprocessed binary image.
+
         :return:
             Preprocessed image
             :rtype: np.ndarray
@@ -93,7 +98,8 @@ class VisualBasis(NAOConfigure):
 
     def show_frame(self):
         """
-        Show current frame data
+        Show current frame data.
+
         :return: None
         """
         if self._frameArray.size == 0:
@@ -103,7 +109,8 @@ class VisualBasis(NAOConfigure):
 
     def print_frame_data(self):
         """
-        Print current frame data
+        Print current frame data.
+
         :return: None
         """
         print "Frame Height:   " + str(self.frameHeight)
@@ -113,6 +120,8 @@ class VisualBasis(NAOConfigure):
 
     def save_frame(self, frame_path):
         """
+        Save the current frame to the give path.
+
         :arg:
             :param frame_path: The path to store the current frame
             :type frame_path: str

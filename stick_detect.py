@@ -16,11 +16,11 @@ from visual_basis import VisualBasis
 
 class StickDetect(VisualBasis):
     """
-    A class to detect the stick at golf hole, inherits from VisualBasis class
+    A class to detect the stick at golf hole, inherits from VisualBasis class.
     """
     class Stick:
         """
-        Simple class for stick
+        Simple class for stick.
         """
         def __init__(self):
             self.boundRect = []
@@ -29,6 +29,8 @@ class StickDetect(VisualBasis):
 
     def __init__(self, ip, port=9559, camera_id=vd.kBottomCamera, resolution=vd.kVGA, is_write=True):
         """
+        Initialization.
+
         :arg:
             :param ip: the ip address of a NAO robot
             :type ip: str
@@ -47,7 +49,8 @@ class StickDetect(VisualBasis):
 
     def __get_preprocessed_image(self, min_hsv, max_hsv, crop_keep):
         """
-        Get pre-processed binary image from the HSV image (transformed from BGR image)
+        Get pre-processed binary image from the HSV image (transformed from BGR image).
+
         :arg:
             :param min_hsv: Lower threshold for yellow stick
             :type min_hsv: np.ndarray
@@ -84,7 +87,8 @@ class StickDetect(VisualBasis):
 
     def __find_stick(self, preprocessed_img, min_perimeter, min_area, min_aspect_ratio):
         """
-        Find the stick at golf hole using some strategy
+        Find the stick at golf hole using some strategy.
+
         :arg:
             :param preprocessed_img: Pre-processed image to be detected
             :type preprocessed_img: np.ndarray
@@ -128,6 +132,8 @@ class StickDetect(VisualBasis):
                           max_hsv=np.array([45, 255, 255]),
                           min_aspect_ratio=0.8):
         """
+        Detect and update the data of stick.
+
         :arg:
             :param client: client name
             :type client: str
@@ -161,7 +167,8 @@ class StickDetect(VisualBasis):
 
     def show_stick_position(self):
         """
-        Show the stick position in the current frame
+        Show the stick position in the current frame.
+
         :return: None
         """
         if not self.stick.boundRect:
@@ -176,6 +183,7 @@ class StickDetect(VisualBasis):
     def slider(self, client):
         """
         Slider for stick detection in HSV color space.
+
         :arg:
             :param client: client name
             ":type client: str
