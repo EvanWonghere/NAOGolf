@@ -24,4 +24,3 @@ if __name__ == '__main__':
         landmarkDetector.show_frame()
         landmarkDetector.update_landmark_data()
         landmarkDetector.show_landmark_data()
-
