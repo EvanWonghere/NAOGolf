@@ -72,6 +72,7 @@ class VisualBasis(NAOConfigure):
             self.frameHeight = frame[1]
             self.frameChannels = frame[2]
             self._frameArray = np.frombuffer(frame[6], dtype=np.uint8).reshape([frame[1], frame[0], frame[2]])
+            print "update done"
         except IndexError:
             print "get image failed!"
 
@@ -107,6 +108,7 @@ class VisualBasis(NAOConfigure):
             print "Please get an image from NAO with method update_frame() first"
         else:
             cv2.imshow("Current Frame", cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL))
+            cv2.waitKey(10)
 
     def show_gray_frame(self):
         """
@@ -117,7 +119,7 @@ class VisualBasis(NAOConfigure):
         if self._gray_frame.size == 0:
             print "Please get an image from NAO with method update_frame() first"
         else:
-            cv2.imshow("Current Frame", self.gray_frame)
+            cv2.imshow("Current bin Frame", self.gray_frame)
 
     def print_frame_data(self):
         """

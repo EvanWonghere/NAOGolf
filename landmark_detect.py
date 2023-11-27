@@ -157,7 +157,8 @@ class LandMarkDetect(VisualBasis):
             markData = self.memoryProxy.getData("LandmarkDetected")
 
             if markData and isinstance(markData, list) and len(markData) >= 2:
-                self.ttsProxy.say("i saw landmark!")
+                # self.ttsProxy.post.say("i saw landmark!")
+                print "I saw landmark!"
                 self.landmark.landmark_flag = True
                 # mark_data:
                 #   [TimeStampField, MarkInfo[N], CameraPoseInFrameTorso, CameraPoseInFrameRobot, CurrentCameraName]
@@ -178,10 +179,12 @@ class LandMarkDetect(VisualBasis):
                 self.landmark.mark_info = [wzCamera, wyCamera, angularSize, head_angle]
                 return
             else:
-                self.ttsProxy.say("where is landmark ?")
+                # self.ttsProxy.post.say("where is landmark ?")
+                print "where is landmark ?"
                 headYawAngle = headYawAngle + 0.8
-        self.ttsProxy.say("i can not find landmark ! I will hit the ball directly ! ")
-        print("landmark is not in sight !")
+        # self.ttsProxy.post.say("I can not find landmark ! I will hit the ball directly ! ")
+        print "I can not find landmark ! I will hit the ball directly ! "
+        print "landmark is not in sight !"
         self.landmark.landmark_flag = False
         self.landmark.mark_info = [0.0, 0.0, 0.0, 0.0]
 
@@ -195,4 +198,5 @@ class LandMarkDetect(VisualBasis):
             True means in sight else not.
             :rtype: bool
         """
-        return self.landmark.dis_x or self.landmark.dis_y or self.landmark.dist or self.landmark.yawAngle
+        return bool(self.landmark.dis_x or self.landmark.dis_y or
+                    self.landmark.dist or self.landmark.yawAngle)

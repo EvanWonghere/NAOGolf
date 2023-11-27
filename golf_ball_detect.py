@@ -303,6 +303,7 @@ class GolfBallDetect(VisualBasis):
 
         :return: None
         """
+        print "ball found status: " + str(self.is_golf_ball_insight())
         print "ball position = (" + str(self.golfBall.ballPosition["disX"]) + \
               ", " + str(self.golfBall.ballPosition["disY"]) + ")"
         print "ball radius = " + str(self.golfBall.ballData["radius"])
@@ -372,4 +373,4 @@ class GolfBallDetect(VisualBasis):
             :rtype: bool
         """
         [dis_x, dis_y, angle] = self.ball_position
-        return dis_x or dis_y or angle
+        return bool(dis_x or dis_y or angle)

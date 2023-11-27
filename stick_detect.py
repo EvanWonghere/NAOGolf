@@ -27,7 +27,7 @@ class StickDetect(VisualBasis):
             self.cropKeep = 1
             self.stickAngle = 0.0  # rad
 
-    def __init__(self, ip, port=9559, camera_id=vd.kBottomCamera, resolution=vd.kVGA, is_write=True):
+    def __init__(self, ip, port=9559, camera_id=vd.kTopCamera, resolution=vd.kVGA, is_write=True):
         """
         Initialization.
 
@@ -154,7 +154,7 @@ class StickDetect(VisualBasis):
         gray_frame = self.gray_frame
 
         rect = self.__find_stick(gray_frame, min_perimeter, min_area, min_aspect_ratio)
-        if not rect:
+        if len(rect) == 0:
             self.stick.boundRect = []
             self.stick.stickAngle = 0.0
         else:
@@ -171,14 +171,15 @@ class StickDetect(VisualBasis):
 
         :return: None
         """
-        if not self.stick.boundRect:
+        print "stick status: " + str(self.is_stick_insight())
+        if len(self.stick.boundRect) == 0:
             # print "No stick detected!"
-            cv2.imshow("Stick Position", self.frame_array)
+            cv2.imshow("Stick Position", cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL))
         else:
             [x, y, w, h] = self.stick.boundRect
             frame = self.frame_array
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            cv2.imshow("Stick Position", frame)
+            cv2.imshow("Stick Position", cv2.cvtColor(frame, cv2.COLOR_HSV2BGR_FULL))
 
     def slider(self, client):
         """
@@ -194,10 +195,10 @@ class StickDetect(VisualBasis):
 
         window_name = "Slider for Stick Detection"
         cv2.namedWindow(window_name)
-        cv2.createTrackbar("minH", window_name, 27, 45, __nothing)
-        cv2.createTrackbar("minS", window_name, 55, 75, __nothing)
-        cv2.createTrackbar("minV", window_name, 115, 150, __nothing)
-        cv2.createTrackbar("maxH", window_name, 45, 70, __nothing)
+        cv2.createTrackbar("minH", window_name, 45, 100, __nothing)
+        cv2.createTrackbar("minS", window_name, 75, 100, __nothing)
+        cv2.createTrackbar("minV", window_name, 51, 150, __nothing)
+        cv2.createTrackbar("maxH", window_name, 70, 100, __nothing)
 
         while True:
             self.update_frame(client)
@@ -210,8 +211,20 @@ class StickDetect(VisualBasis):
             min_aspect_ratio = 0.8
             crop_keep = 0.75
             self.update_stick_data(client, crop_keep, min_hsv, max_hsv, min_aspect_ratio)
-            cv2.imshow(window_name, self.gray_frame)
+            cv2.imshow(window_name, cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL))
             self.show_stick_position()
+            self.show_gray_frame()
             k = cv2.waitKey(10) & 0xFF
             if k == 27:
                 break
+
+    def is_stick_insight(self):
+        """
+        Return whether the golf stick is in NAO robot's sight.
+
+        :return:
+            True means in sight else not.
+            :rtype: bool
+        """
+        print self.stick.boundRect
+        return len(self.stick.boundRect) != 0
