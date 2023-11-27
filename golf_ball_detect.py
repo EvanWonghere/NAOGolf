@@ -200,7 +200,7 @@ class GolfBallDetect(VisualBasis):
                     (initY + 4 * radius) > self.frameHeight or radius < 1):
                 return circles
 
-        BGR_frame = cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL)
+        BGR_frame = cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR)
         rRatioMin = 1.0
         circleSelected = np.uint16([])
         for circle in circles:
@@ -209,7 +209,8 @@ class GolfBallDetect(VisualBasis):
             radius = circle[2]
             initX = centerX - 2 * radius
             initY = centerY - 2 * radius
-            if initX < 0 or initY < 0 or (initX + 4 * radius) > self.frameWidth or (initY + 4 * radius) > self.frameHeight or radius < 1:
+            if initX < 0 or initY < 0 or (initX + 4 * radius) > self.frameWidth or \
+                    (initY + 4 * radius) > self.frameHeight or radius < 1:
                 continue
             rectBallArea = BGR_frame[initY:initY + 4 * radius + 1, initX:initX + 4 * radius + 1, :]
             bFlat = np.float16(rectBallArea[:, :, 0].flatten())
@@ -259,7 +260,8 @@ class GolfBallDetect(VisualBasis):
 
         self.update_frame(client)
         self._gray_frame = self.__get_preprocessed_image(low_min_hsv, low_max_hsv, high_min_hsv, high_max_hsv)
-        circles = find_circles(self.gray_frame, min_dist, min_radius, max_radius)
+        gray_frame = self.gray_frame
+        circles = find_circles(gray_frame, min_dist, min_radius, max_radius)
         circle = self.select_circle(circles)
 
         if not circle.shape or circle.shape[0] == 0:
@@ -299,10 +301,10 @@ class GolfBallDetect(VisualBasis):
 
         :return: None
         """
-        print "ball position = (" + str(self.golfBall.ballPosition["disX"]) + \
-                  ", " + str(self.golfBall.ballPosition["disY"]) + ")"
         if self.golfBall.ballData["radius"] == 0:
-            cv2.imshow("Ball Position", cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL))
+            print "ball position = (" + str(self.golfBall.ballPosition["disX"]) + \
+                  ", " + str(self.golfBall.ballPosition["disY"]) + ")"
+            cv2.imshow("ball position", self.frame_array)
         else:
             # print "ballX = " + str(self.ballData["centerX"])
             # print "ballY = " + str(self.ballData["centerY"])
@@ -314,7 +316,7 @@ class GolfBallDetect(VisualBasis):
                        self.golfBall.ballData["radius"], (250, 150, 150), 2)
             cv2.circle(frame, (self.golfBall.ballData["centerX"], self.golfBall.ballData["centerY"]),
                        2, (50, 250, 50), 3)
-            cv2.imshow("Ball Position", cv2.cvtColor(frame, cv2.COLOR_HSV2BGR_FULL))
+            cv2.imshow("Ball Position", cv2.cvtColor(frame, cv2.COLOR_HSV2BGR))
 
     def slider_hsv(self, client):
         """
