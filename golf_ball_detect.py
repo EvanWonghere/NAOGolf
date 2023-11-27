@@ -283,7 +283,9 @@ class GolfBallDetect(VisualBasis):
             distance in x-axis, distance in y-axis and direction related to Nao.
             :rtype: list
         """
-        return self.golfBall.ballPosition.values()
+        return [self.golfBall.ballPosition['disX'],
+                self.golfBall.ballPosition['disY'],
+                self.golfBall.ballPosition['angle']]
 
     @property
     def ball_data(self):
@@ -294,7 +296,9 @@ class GolfBallDetect(VisualBasis):
             CenterX, centerY and radius of the red ball.
             :rtype: list
         """
-        return self.golfBall.ballData.values()
+        return [self.golfBall.ballData['centerX'],
+                self.golfBall.ballData['centerY'],
+                self.golfBall.ballData['radius']]
 
     def show_ball_position(self):
         """
@@ -337,7 +341,7 @@ class GolfBallDetect(VisualBasis):
         window_name = "Slider for Ball Detection"
         cv2.namedWindow(window_name)
         cv2.createTrackbar("minS1", window_name, 43, 60, __nothing)
-        cv2.createTrackbar("minV1", window_name, 46, 65, __nothing)
+        cv2.createTrackbar("minV1", window_name, 30, 65, __nothing)
         cv2.createTrackbar("maxH1", window_name, 10, 20, __nothing)
         cv2.createTrackbar("minH2", window_name, 156, 175, __nothing)
         while True:
