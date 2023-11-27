@@ -63,7 +63,8 @@ class VisualBasis(NAOConfigure):
             self.cameraProxy.setActiveCamera(self.cameraID)
             time.sleep(1)
 
-        video_client = self.cameraProxy.subscribe(client, self.resolution, self.colorSpace, self.fps)
+        video_client = self.cameraProxy.subscribeCamera(client, self.cameraID,
+                                                        self.resolution, self.colorSpace, self.fps)
         frame = self.cameraProxy.getImageRemote(video_client)
         self.cameraProxy.unsubscribe(video_client)
         try:
@@ -105,7 +106,7 @@ class VisualBasis(NAOConfigure):
         if self._frameArray.size == 0:
             print "Please get an image from NAO with method update_frame() first"
         else:
-            cv2.imshow("Current Frame", self._frameArray)
+            cv2.imshow("Current Frame", cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR))
 
     def print_frame_data(self):
         """

@@ -64,13 +64,10 @@ class LandMarkDetect(VisualBasis):
         self.cameraName = "CameraTop" if camera_id == vd.kTopCamera else "CameraBottom"
         self.cameraProxy.setActiveCamera(self.cameraID)
 
-    def update_landmark_data(self, client="landMark"):
+    def update_landmark_data(self):
         """
         Update NAO landmark information.
 
-        :arg:
-            :param client: client name
-            :type client: str
         :return: None
         """
         if self.cameraProxy.getActiveCamera() != self.cameraID:
@@ -154,7 +151,6 @@ class LandMarkDetect(VisualBasis):
         self.motionProxy.angleInterpolationWithSpeed("HeadPitch", 0.0, 0.3)
         self.motionProxy.angleInterpolationWithSpeed("HeadYaw", 0.0, 0.3)
         self.landmarkProxy.subscribe("landmarkTest")
-        markData = self.memoryProxy.getData("LandmarkDetected")
         while headYawAngle <= 2:
             self.motionProxy.angleInterpolationWithSpeed("HeadYaw", headYawAngle, 0.1)
             time.sleep(1)
@@ -183,9 +179,6 @@ class LandMarkDetect(VisualBasis):
                 return
             else:
                 self.ttsProxy.say("where is landmark ?")
-                wzCamera = 0
-                wyCamera = 0
-                angular_Size = 0
                 headYawAngle = headYawAngle + 0.8
         self.ttsProxy.say("i can not find landmark ! I will hit the ball directly ! ")
         print("landmark is not in sight !")

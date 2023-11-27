@@ -29,7 +29,7 @@ class NAOConfigure(object):
         try:
             self.ttsProxy = ALProxy("ALTextToSpeech", self.ip, self.port)
             self.memoryProxy = ALProxy("ALMemory", self.ip, self.port)
-            self.cameraProxy = ALProxy("AVideoDevice", self.ip, self.port)
+            self.cameraProxy = ALProxy("ALVideoDevice", self.ip, self.port)
             self.motionProxy = ALProxy("ALMotion", self.ip, self.port)
             self.postureProxy = ALProxy("ALRobotPosture", self.ip, self.port)
             self.landmarkProxy = ALProxy("ALLandMarkDetection", self.ip, self.port)

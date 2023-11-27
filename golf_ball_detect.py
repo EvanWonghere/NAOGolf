@@ -44,31 +44,16 @@ def find_circles(preprocessed_img, min_dist, min_radius, max_radius):
     return np.uint16(np.round(circles[0, ]))
 
 
-def select_circle(circles):
-    """
-    Select one circle in list type from all circles detected.
-
-    :arg:
-        :param circles: numpy array shaped (N, 3),　N is the number of circles.
-        :type circles: np.ndarray
-    :return:
-        selected circles
-        :rtype: np.ndarray
-    """
-    # We do not find it useful so just pass
-    if circles.shape[0] == 0:
-        return circles
-    return circles[0]
-
-
 class GolfBallDetect(VisualBasis):
     """
     A class to detect golf ball inherits from VisualBasis class.
     """
+
     class GolfBall:
         """
         Simple class for golf ball.
         """
+
         def __init__(self):
             """
             Initialization.
@@ -115,24 +100,20 @@ class GolfBallDetect(VisualBasis):
             pre-processed binary image
             :rtype: np.ndarray
         """
-        try:
-            hsv_img = cv2.cvtColor(self.frame_array, cv2.COLOR_BGR2HSV)
-        except KeyError:
-            print "No image detected!"
-        else:
-            lower_ranged_frame = cv2.inRange(hsv_img, low_min_hsv, low_max_hsv)
-            higher_ranged_frame = cv2.inRange(hsv_img, high_min_hsv, high_max_hsv)
-            merged_frame = np.maximum(lower_ranged_frame, higher_ranged_frame)
+        hsv_img = self.frame_array
+        lower_ranged_frame = cv2.inRange(hsv_img, low_min_hsv, low_max_hsv)
+        higher_ranged_frame = cv2.inRange(hsv_img, high_min_hsv, high_max_hsv)
+        merged_frame = np.maximum(lower_ranged_frame, higher_ranged_frame)
 
-            kernel_size = (9, 9)
-            kernel = np.ones((5, 5), np.uint8)
-            sigma_x = 1.5
+        kernel_size = (9, 9)
+        kernel = np.ones((5, 5), np.uint8)
+        sigma_x = 1.5
 
-            closed_frame = cv2.morphologyEx(merged_frame, cv2.MORPH_CLOSE, kernel)
-            opened_frame = cv2.morphologyEx(closed_frame, cv2.MORPH_OPEN, kernel)
-            blured_frame = cv2.GaussianBlur(opened_frame, kernel_size, sigma_x)
+        closed_frame = cv2.morphologyEx(merged_frame, cv2.MORPH_CLOSE, kernel)
+        opened_frame = cv2.morphologyEx(closed_frame, cv2.MORPH_OPEN, kernel)
+        blured_frame = cv2.GaussianBlur(opened_frame, kernel_size, sigma_x)
 
-            return blured_frame
+        return blured_frame
 
     def _update_ball_position(self, stand_state):
         """
@@ -194,6 +175,58 @@ class GolfBallDetect(VisualBasis):
                 self.golfBall.ballPosition["disY"] = ball_y
                 self.golfBall.ballPosition["angle"] = ball_yaw
 
+    def select_circle(self, circles):
+        """
+        Select one circle in list type from all circles detected.
+
+        :arg:
+            :param circles: numpy array shaped (N, 3),　N is the number of circles.
+            :type circles: np.ndarray
+        :return:
+            selected circles
+            :rtype: np.ndarray
+        """
+        # We do not find it useful so just pass
+        if not circles.shape or circles.shape[0] == 0:
+            return circles
+
+        if circles.shape[0] == 1:
+            centerX = circles[0][0]
+            centerY = circles[0][1]
+            radius = circles[0][2]
+            initX = centerX - 2 * radius
+            initY = centerY - 2 * radius
+            if (initX < 0 or initY < 0 or (initX + 4 * radius) > self.frameWidth or
+                    (initY + 4 * radius) > self.frameHeight or radius < 1):
+                return circles
+
+        BGR_frame = cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR)
+        rRatioMin = 1.0
+        circleSelected = np.uint16([])
+        for circle in circles:
+            centerX = circle[0]
+            centerY = circle[1]
+            radius = circle[2]
+            initX = centerX - 2 * radius
+            initY = centerY - 2 * radius
+            if initX < 0 or initY < 0 or (initX + 4 * radius) > self.frameWidth or \
+                    (initY + 4 * radius) > self.frameHeight or radius < 1:
+                continue
+            rectBallArea = BGR_frame[initY:initY + 4 * radius + 1, initX:initX + 4 * radius + 1, :]
+            bFlat = np.float16(rectBallArea[:, :, 0].flatten())
+            gFlat = np.float16(rectBallArea[:, :, 1].flatten())
+            rFlat = np.float16(rectBallArea[:, :, 2].flatten())
+            rScore1 = np.uint8(rFlat > 1.0 * gFlat)
+            rScore2 = np.uint8(rFlat > 1.0 * bFlat)
+            rScore = float(np.sum(rScore1 * rScore2))
+            gScore = float(np.sum(np.uint8(gFlat > 1.0 * rFlat)))
+            rRatio = rScore / len(rFlat)
+            gRatio = gScore / len(gFlat)
+            if rRatio >= 0.12 and gRatio >= 0.1 and abs(rRatio - 0.19) < abs(rRatioMin - 0.19):
+                circleSelected = circle
+                rRatioMin = rRatio
+        return circleSelected
+
     def update_ball_data(self, client="python-client", stand_state="standInit",
                          low_min_hsv=np.array([0, 43, 46]),
                          low_max_hsv=np.array([10, 255, 255]),
@@ -229,9 +262,9 @@ class GolfBallDetect(VisualBasis):
         self._gray_frame = self.__get_preprocessed_image(low_min_hsv, low_max_hsv, high_min_hsv, high_max_hsv)
         gray_frame = self.gray_frame
         circles = find_circles(gray_frame, min_dist, min_radius, max_radius)
-        circle = select_circle(circles)
+        circle = self.select_circle(circles)
 
-        if circle.shape[0] == 0:
+        if not circle.shape or circle.shape[0] == 0:
             # print "No ball detected"
             self.golfBall.ballData = {"centerX": 0, "centerY": 0, "radius": 0}
             self.golfBall.ballPosition = {"disX": 0, "disY": 0, "angle": 0}
@@ -269,7 +302,7 @@ class GolfBallDetect(VisualBasis):
         :return: None
         """
         if self.golfBall.ballData["radius"] == 0:
-            print "ball position = (" + str(self.golfBall.ballPosition["disX"]) +\
+            print "ball position = (" + str(self.golfBall.ballPosition["disX"]) + \
                   ", " + str(self.golfBall.ballPosition["disY"]) + ")"
             cv2.imshow("ball position", self.frame_array)
         else:
@@ -283,7 +316,7 @@ class GolfBallDetect(VisualBasis):
                        self.golfBall.ballData["radius"], (250, 150, 150), 2)
             cv2.circle(frame, (self.golfBall.ballData["centerX"], self.golfBall.ballData["centerY"]),
                        2, (50, 250, 50), 3)
-            cv2.imshow("Ball Position", frame)
+            cv2.imshow("Ball Position", cv2.cvtColor(frame, cv2.COLOR_HSV2BGR))
 
     def slider_hsv(self, client):
         """
@@ -294,6 +327,7 @@ class GolfBallDetect(VisualBasis):
             :type client: str
         :return: None
         """
+
         def __nothing():
             pass
 
@@ -318,7 +352,7 @@ class GolfBallDetect(VisualBasis):
                                   low_max_hsv=max_hsv1,
                                   high_min_hsv=min_hsv2,
                                   high_max_hsv=max_hsv2)
-            cv2.imshow(window_name, self._gray_frame)
+            cv2.imshow(window_name, cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR))
             self.show_ball_position()
             k = cv2.waitKey(10) & 0xFF
             if k == 27:
