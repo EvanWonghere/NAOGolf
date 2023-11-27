@@ -71,7 +71,7 @@ class StickDetect(VisualBasis):
         except IndexError:
             print "Error occurred when cropping the image"
         else:
-            hsv_img = cv2.cvtColor(cropped_frame, cv2.COLOR_BGR2HSV)
+            hsv_img = cropped_frame
             bin_img = cv2.inRange(hsv_img, min_hsv, max_hsv)
 
             kernel_size = (9, 9)
