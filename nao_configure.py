@@ -33,6 +33,7 @@ class NAOConfigure(object):
             self.motionProxy = ALProxy("ALMotion", self.ip, self.port)
             self.postureProxy = ALProxy("ALRobotPosture", self.ip, self.port)
             self.landmarkProxy = ALProxy("ALLandMarkDetection", self.ip, self.port)
+            self.autonomousLifeProxy = ALProxy("ALAutonomousLife", self.ip, self.port)
         except Exception, e:
             print("Error when configuring the NAO!")
             print(str(e))
