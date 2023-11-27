@@ -106,7 +106,18 @@ class VisualBasis(NAOConfigure):
         if self._frameArray.size == 0:
             print "Please get an image from NAO with method update_frame() first"
         else:
-            cv2.imshow("Current Frame", cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR))
+            cv2.imshow("Current Frame", cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL))
+
+    def show_gray_frame(self):
+        """
+        Show current gray frame data.
+
+        :return: None
+        """
+        if self._gray_frame.size == 0:
+            print "Please get an image from NAO with method update_frame() first"
+        else:
+            cv2.imshow("Current Frame", self.gray_frame)
 
     def print_frame_data(self):
         """

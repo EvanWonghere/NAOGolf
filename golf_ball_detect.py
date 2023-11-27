@@ -37,11 +37,11 @@ def find_circles(preprocessed_img, min_dist, min_radius, max_radius):
     param1 = 150
     param2 = 15
     circles = cv2.HoughCircles(np.uint8(preprocessed_img), method, dp,
-                               min_dist, param1, param2, min_radius, max_radius)
+                               min_dist, param1=param1, param2=param2, minRadius=min_radius, maxRadius=max_radius)
 
     if circles is None:
         return np.uint16([])
-    return np.uint16(np.round(circles[0,]))
+    return np.uint16(np.round(circles[0, ]))
 
 
 class GolfBallDetect(VisualBasis):
@@ -190,7 +190,9 @@ class GolfBallDetect(VisualBasis):
         if not circles.shape or circles.shape[0] == 0:
             return circles
 
+        # return circles[0]
         if circles.shape[0] == 1:
+            print circles.shape
             centerX = circles[0][0]
             centerY = circles[0][1]
             radius = circles[0][2]
@@ -200,10 +202,11 @@ class GolfBallDetect(VisualBasis):
                     (initY + 4 * radius) > self.frameHeight or radius < 1):
                 return circles
 
-        BGR_frame = cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL)
+        BGR_frame = cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR)
         rRatioMin = 1.0
         circleSelected = np.uint16([])
         for circle in circles:
+            print circle
             centerX = circle[0]
             centerY = circle[1]
             radius = circle[2]
@@ -219,7 +222,7 @@ class GolfBallDetect(VisualBasis):
             rScore1 = np.uint8(rFlat > 1.0 * gFlat)
             rScore2 = np.uint8(rFlat > 1.0 * bFlat)
             rScore = float(np.sum(rScore1 * rScore2))
-            gScore = float(np.sum(np.uint8(gFlat > 1.0 * rFlat)))
+            gScore = float(np.sum(np.uint8(gFlat > 1 / 1.0 * rFlat)))
             rRatio = rScore / len(rFlat)
             gRatio = gScore / len(gFlat)
             if rRatio >= 0.12 and gRatio >= 0.1 and abs(rRatio - 0.19) < abs(rRatioMin - 0.19):
@@ -254,8 +257,8 @@ class GolfBallDetect(VisualBasis):
         # low_max_hsv = np.array([10, 255, 255])
         # high_min_hsv = np.array([156, 43, 46])
         # high_max_hsv = np.array([180, 255, 255])
-        min_dist = int(self.frameHeight / 30.0)
-        min_radius = 1
+        min_dist = int(self.frameHeight / 60.0)
+        min_radius = 5
         max_radius = int(self.frameHeight / 10.0)
 
         self.update_frame(client)
@@ -302,6 +305,7 @@ class GolfBallDetect(VisualBasis):
         """
         print "ball position = (" + str(self.golfBall.ballPosition["disX"]) + \
               ", " + str(self.golfBall.ballPosition["disY"]) + ")"
+        print "ball radius = " + str(self.golfBall.ballData["radius"])
         if self.golfBall.ballData["radius"] == 0:
             cv2.imshow("Ball Position", cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL))
         else:
@@ -351,7 +355,8 @@ class GolfBallDetect(VisualBasis):
                                   low_max_hsv=max_hsv1,
                                   high_min_hsv=min_hsv2,
                                   high_max_hsv=max_hsv2)
-            cv2.imshow(window_name, cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR))
+            cv2.imshow(window_name, cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL))
+            self.show_gray_frame()
             self.show_ball_position()
             k = cv2.waitKey(10) & 0xFF
             if k == 27:
