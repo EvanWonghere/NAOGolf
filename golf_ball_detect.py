@@ -206,7 +206,6 @@ class GolfBallDetect(VisualBasis):
         rRatioMin = 1.0
         circleSelected = np.uint16([])
         for circle in circles:
-            print circle
             centerX = circle[0]
             centerY = circle[1]
             radius = circle[2]
@@ -225,7 +224,7 @@ class GolfBallDetect(VisualBasis):
             gScore = float(np.sum(np.uint8(gFlat > 1 / 1.0 * rFlat)))
             rRatio = rScore / len(rFlat)
             gRatio = gScore / len(gFlat)
-            if rRatio >= 0.12 and gRatio >= 0.1 and abs(rRatio - 0.19) < abs(rRatioMin - 0.19):
+            if rRatio >= 0.12 and gRatio >= 0.2 and abs(rRatio - 0.19) < abs(rRatioMin - 0.19):
                 circleSelected = circle
                 rRatioMin = rRatio
         return circleSelected
@@ -257,11 +256,11 @@ class GolfBallDetect(VisualBasis):
         # low_max_hsv = np.array([10, 255, 255])
         # high_min_hsv = np.array([156, 43, 46])
         # high_max_hsv = np.array([180, 255, 255])
+        self.update_frame(client)
         min_dist = int(self.frameHeight / 60.0)
-        min_radius = 5
+        min_radius = 3
         max_radius = int(self.frameHeight / 10.0)
 
-        self.update_frame(client)
         self._gray_frame = self.__get_preprocessed_image(low_min_hsv, low_max_hsv, high_min_hsv, high_max_hsv)
         circles = find_circles(self.gray_frame, min_dist, min_radius, max_radius)
         circle = self.select_circle(circles)

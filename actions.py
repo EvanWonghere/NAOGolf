@@ -36,7 +36,7 @@ class Actions(MotionBasis):
         :return: None
         """
         super(Actions, self).__init__(ip, port)
-        self.max_speed_fraction = 0.05
+        self.max_speed_fraction = 0.2
 
         self.ball_detector = GolfBallDetect(ip, port)
         self.stick_detector = StickDetect(ip, port)
@@ -54,35 +54,58 @@ class Actions(MotionBasis):
         """
         for i in range(1):
             names = ['HeadPitch', 'HeadYaw']
-            targe_tangles = [-13.7 * almath.TO_RAD, 1.0 * almath.TO_RAD]
+            targe_tangles = [40 * almath.TO_RAD, 1.0 * almath.TO_RAD]
             self.motionProxy.angleInterpolationWithSpeed(names, targe_tangles, self.max_speed_fraction)
-            self.ball_detector.update_ball_data(client='xxx')
-            [x, y, angle] = self.ball_detector.ball_data
+            time.sleep(1)
+            self.ball_detector.update_ball_data(client='xcafas')
+            self.ball_detector.show_ball_position()
+            cv2.waitKey(1000)
+            [x, y, angle] = self.ball_detector.ball_position
+            if not x == 0 and not y == 0 and not angle == 0:
+                break
+
+            names = ['HeadPitch', 'HeadYaw']
+            targe_tangles = [-10 * almath.TO_RAD, 1.0 * almath.TO_RAD]
+            self.motionProxy.angleInterpolationWithSpeed(names, targe_tangles, self.max_speed_fraction)
+            time.sleep(2)
+            self.ball_detector.update_ball_data(client='124111')
+            self.ball_detector.show_ball_position()
+            cv2.waitKey(1000)
+            [x, y, angle] = self.ball_detector.ball_position
             if not x == 0 and not y == 0 and not angle == 0:
                 break
 
             name = ["HeadYaw"]
             target_angle = 40.3 * almath.TO_RAD
             self.motionProxy.angleInterpolationWithSpeed(name, target_angle, self.max_speed_fraction)
-            # time.sleep(0.5)
-            self.ball_detector.update_ball_data(client='xxx')
-            [x, y, angle] = self.ball_detector.ball_data
+            time.sleep(1)
+            self.ball_detector.update_ball_data(client='124112415')
+            self.ball_detector.show_ball_position()
+            cv2.waitKey(1000)
+            [x, y, angle] = self.ball_detector.ball_position
             if not x == 0 and not y == 0 and not angle == 0:
                 break
 
             target_angle = 1.0 * almath.TO_RAD
             self.motionProxy.angleInterpolationWithSpeed(name, target_angle, self.max_speed_fraction)
-            time.sleep(1.0)
             fraction = -45.2
             if find_ball:
                 fraction = -51.2
             target_angle = fraction * almath.TO_RAD
             self.motionProxy.angleInterpolationWithSpeed(name, target_angle, self.max_speed_fraction)
+            time.sleep(1.0)
+
             self.ball_detector.update_ball_data(client='xxx')
+            self.ball_detector.show_ball_position()
+            cv2.waitKey(1000)
             [x, y, angle] = self.ball_detector.ball_data
             if not x == 0 and not y == 0 and not angle == 0:
                 break
         self.look_down()
+    def search_golf_ball_new(self) :
+        MAX_X = 0.4
+        MAX_Y = 0.4
+        MAX_ANGLE = 10 * math.pi / 180
 
     def search_golf_ball(self):
         """
@@ -108,25 +131,25 @@ class Actions(MotionBasis):
 
         # Start searching the ball
         self.move_head_searching()
-        [x, y, angle] = self.ball_detector.ball_data
+
+        [x, y, angle] = self.ball_detector.ball_position
         print "Ball position: x = {}, y = {}, angle = {}".format(x, y, angle)
-        cv2.waitKey(0)
         self.look_down()
 
         while x > MAX_X or y > MAX_Y or y < -MAX_Y or \
                 angle > MAX_ANGLE or angle < -MAX_ANGLE:
             move_to_ball(x, y, angle)
             self.move_head_searching()
-            [x, y, angle] = self.ball_detector.ball_data
+            [x, y, angle] = self.ball_detector.ball_position
+
+
             print "Ball position: x = {}, y = {}, angle = {}".format(x, y, angle)
-            cv2.waitKey(0)
             self.look_down()
 
         if x == 0 and y == 0 and angle == 0:
             self.move_head_searching(False)
             [x, y, angle] = self.ball_detector.ball_data
             print "Ball position: x = {}, y = {}, angle = {}".format(x, y, angle)
-            cv2.waitKey(0)
             if x == 0 and y == 0 and angle == 0:
                 self.look_down()
                 self.motionProxy.moveTo(0, 0, angle, self.moveConfig)

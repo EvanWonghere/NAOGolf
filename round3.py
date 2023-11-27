@@ -1,20 +1,31 @@
 import vision_definitions as vd
-import almath
+
 from golf_ball_detect import GolfBallDetect
 from stick_detect import StickDetect
 from landmark_detect import LandMarkDetect
+from motion_basis import MotionBasis
+from actions import Actions
 
 if __name__ == '__main__':
     ip = "192.168.30.223"
-    GolfBallDetector = GolfBallDetect(ip)
-    #GolfBallDetector.autonomousLifeProxy.setState('disabled')
-    GolfBallDetector.postureProxy.goToPosture("StandInit", 1.0)
-    names = ['HeadPitch', 'HeadYaw']
-    targe_tangles = [-10 * almath.TO_RAD, 1.0 * almath.TO_RAD]
-    GolfBallDetector.motionProxy.angleInterpolationWithSpeed(names, targe_tangles, 0.2)
 
-    client = 'asda'
-    GolfBallDetector.slider_hsv(client)
+    # MotionController = MotionBasis(ip)
+    # MotionController.autonomousLifeProxy.setState('disabled')
+    # MotionController.postureProxy.goToPosture("StandInit", 1.0)
+    # MotionController.grab_club()
+    # MotionController.hit_ball(0.8)
+
+    Actor = Actions(ip)
+    
+    Actor.autonomousLifeProxy.setState('disabled')
+    Actor.postureProxy.goToPosture("StandInit", 1.0)
+    #Actor.look_down()
+
+    Actor.search_golf_ball()
+    # GolfBallDetector = GolfBallDetect(ip)
+    # GolfBallDetector.autonomousLifeProxy.setState('disabled')
+    # client = 'test112312643'
+    # GolfBallDetector.slider_hsv(client)
 
     # stickDetector = StickDetect(ip, camera_id=vd.kBottomCamera)
     # stickDetector.autonomousLifeProxy.setState('disabled')

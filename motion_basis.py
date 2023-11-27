@@ -58,11 +58,11 @@ class MotionBasis(NAOConfigure):
         :return: None
         """
         while True:
-            RightHandTouchedFlag = self.memoryProxy.getData("HandRightRightTouched")
+            FrontTactilTouched = self.memoryProxy.getData("FrontTactilTouched")
             # Raised when the right hand right tactile sensor is touched (by human).
             # return value – 1.0 if right hand right tactile sensor is touched.
-            if RightHandTouchedFlag == 1.0:
-                print "right hand right touched"
+            if FrontTactilTouched == 1.0:
+                print "touched"
                 self.ttsProxy.say("give me a club ")
                 targetAngles = [67.7 * almath.TO_RAD, 3.2 * almath.TO_RAD,
                                 73.8 * almath.TO_RAD, 6.2 * almath.TO_RAD,
