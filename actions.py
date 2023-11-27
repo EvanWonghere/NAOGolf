@@ -61,7 +61,7 @@ class Actions(MotionBasis):
             targe_tangles = [40 * almath.TO_RAD, 1.0 * almath.TO_RAD]
             self.motionProxy.angleInterpolationWithSpeed(names, targe_tangles, self.max_speed_fraction)
             time.sleep(1)
-            self.ball_detector.update_ball_data(client='xcafas')
+            self.ball_detector.update_ball_data(client=client)
             self.ball_detector.show_ball_position()
             cv2.waitKey(1000)
             [x, y, angle] = self.ball_detector.ball_position
@@ -72,7 +72,7 @@ class Actions(MotionBasis):
             targe_tangles = [-10 * almath.TO_RAD, 1.0 * almath.TO_RAD]
             self.motionProxy.angleInterpolationWithSpeed(names, targe_tangles, self.max_speed_fraction)
             time.sleep(2)
-            self.ball_detector.update_ball_data(client='124111')
+            self.ball_detector.update_ball_data(client=client)
             self.ball_detector.show_ball_position()
             cv2.waitKey(1000)
             [x, y, angle] = self.ball_detector.ball_position
@@ -83,7 +83,7 @@ class Actions(MotionBasis):
             target_angle = 40.3 * almath.TO_RAD
             self.motionProxy.angleInterpolationWithSpeed(name, target_angle, self.max_speed_fraction)
             time.sleep(1)
-            self.ball_detector.update_ball_data(client='124112415')
+            self.ball_detector.update_ball_data(client=client)
             self.ball_detector.show_ball_position()
             cv2.waitKey(1000)
             [x, y, angle] = self.ball_detector.ball_position
@@ -100,7 +100,7 @@ class Actions(MotionBasis):
             self.motionProxy.angleInterpolationWithSpeed(name, target_angle, self.max_speed_fraction)
             time.sleep(1.0)
 
-            self.ball_detector.update_ball_data(client='xxx')
+            self.ball_detector.update_ball_data(client=client)
             self.ball_detector.show_ball_position()
             cv2.waitKey(1000)
             [x, y, angle] = self.ball_detector.ball_data
