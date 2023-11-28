@@ -128,8 +128,8 @@ class StickDetect(VisualBasis):
         return rect
 
     def update_stick_data(self, client="test", crop_keep=0.75,
-                          min_hsv=np.array([27, 55, 115]),
-                          max_hsv=np.array([45, 255, 255]),
+                          min_hsv=np.array([45, 75, 51]),
+                          max_hsv=np.array([70, 255, 255]),
                           min_aspect_ratio=0.8):
         """
         Detect and update the data of stick.
@@ -173,7 +173,7 @@ class StickDetect(VisualBasis):
         """
         print "stick status: " + str(self.is_stick_insight())
         if len(self.stick.boundRect) == 0:
-            # print "No stick detected!"
+            print "No stick detected!"
             cv2.imshow("Stick Position", cv2.cvtColor(self.frame_array, cv2.COLOR_HSV2BGR_FULL))
         else:
             [x, y, w, h] = self.stick.boundRect
